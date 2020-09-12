@@ -1,0 +1,7 @@
+<div class="name-input">Input your name <input [(ngModel)]="name"/></div>
+
+<div class="button">
+  <button (click)="send()">Send</button>
+</div>
+
+<div class="greeting" *ngIf="greeting">{{greeting}}</div>
