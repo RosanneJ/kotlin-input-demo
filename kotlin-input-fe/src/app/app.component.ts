@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { RestService } from './rest.service';
-import { Greeting } from './Greeting';
 
 @Component({
   selector: 'app-root',
@@ -10,13 +9,23 @@ import { Greeting } from './Greeting';
 export class AppComponent {
   name: string;
   greeting: string;
+  problem: string;
+  valid: boolean;
+  problemSend: boolean;
 
   constructor(private restService: RestService) {
   }
 
   send(): void {
-    this.restService.sendName(this.name).subscribe((o: Greeting) => {
-      this.greeting = o.content;
+    this.restService.sendName(this.name).subscribe((value: {content, unknownUser}) => {
+      this.greeting = value.content;
+    });
+  }
+
+  submitProblem(no: number) {
+    this.restService.sendProblem(this.name, no, this.problem).subscribe((result: {success}) => {
+      this.problemSend = true;
+      this.valid = result.success
     });
   }
 }

@@ -5,9 +5,15 @@
   align-items: center;
   font-family: Arial;
 
-  .name-input,
+  .user-input,
   .button,
   .greeting {
     margin: 2rem;
+  }
+
+  .input-kotlin,
+  .user-input {
+    display: flex;
+    flex-direction: column;
   }
 }

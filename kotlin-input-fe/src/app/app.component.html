@@ -1,7 +1,20 @@
-<div class="name-input">Input your name <input [(ngModel)]="name"/></div>
+<div class="user-input">
+  <label>Your name:
+    <input [(ngModel)]="name"/>
+  </label>
+</div>
 
 <div class="button">
   <button (click)="send()">Send</button>
 </div>
 
-<div class="greeting" *ngIf="greeting">{{greeting}}</div>
+<div *ngIf="greeting" class="greeting">{{greeting}}</div>
+
+<div *ngIf="greeting" class="input-kotlin">
+  <label>Write a Java program to print the sum of two numbers.</label>
+  <textarea rows="20" cols="100" [(ngModel)]="problem"></textarea>
+    <button (click)="submitProblem(1)">Submit Solution</button>
+</div>
+<div *ngIf="problemSend">
+  {{valid ? 'You submitted valid Java' : 'You did not submit valid Java'}}
+</div>
