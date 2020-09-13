@@ -12,6 +12,8 @@ export class AppComponent {
   problem: string;
   valid: boolean;
   problemSend: boolean;
+  invalidPositions: string;
+  hint: string;
 
   constructor(private restService: RestService) {
   }
@@ -23,9 +25,11 @@ export class AppComponent {
   }
 
   submitProblem(no: number) {
-    this.restService.sendProblem(this.name, no, this.problem).subscribe((result: {success}) => {
+    this.restService.sendProblem(this.name, no, this.problem).subscribe((result: {success, invalidPositions: number[], hint}) => {
       this.problemSend = true;
       this.valid = result.success
+      this.invalidPositions = result.invalidPositions.join(', ');
+      this.hint = result.hint
     });
   }
 }

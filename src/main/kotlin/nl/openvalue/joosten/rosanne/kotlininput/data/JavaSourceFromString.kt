@@ -4,14 +4,10 @@ import java.net.URI
 import javax.tools.JavaFileObject
 import javax.tools.SimpleJavaFileObject
 
-class JavaSourceFromString : SimpleJavaFileObject {
-    var code: String? = null
-
-    constructor (name: String, code: String) :
-            super(URI.create("string:///" + name.replace('.', '/') + JavaFileObject.Kind.SOURCE.extension),
-                    JavaFileObject.Kind.SOURCE) {
-        this.code = code
-    }
+class JavaSourceFromString(name: String, code: String)
+    : SimpleJavaFileObject(URI.create("string:///" + name.replace('.', '/') + JavaFileObject.Kind.SOURCE.extension),
+        JavaFileObject.Kind.SOURCE) {
+    var code: String? = code
 
     override fun getCharContent(ignoreEncodingErrors: Boolean): CharSequence? {
         return code

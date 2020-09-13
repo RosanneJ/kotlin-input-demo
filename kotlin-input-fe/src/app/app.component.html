@@ -17,4 +17,6 @@
 </div>
 <div *ngIf="problemSend">
   {{valid ? 'You submitted valid Java' : 'You did not submit valid Java'}}
+  {{!valid ? '\nInvalid lines: ' + invalidPositions : ''}}
+  {{!valid ? hint : ''}}
 </div>
