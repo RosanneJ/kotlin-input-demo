@@ -1,25 +1,23 @@
 package nl.openvalue.joosten.rosanne.kotlininput.controller
 
 import nl.openvalue.joosten.rosanne.kotlininput.data.InputEntity
-import nl.openvalue.joosten.rosanne.kotlininput.data.JavaSourceFromString
 import nl.openvalue.joosten.rosanne.kotlininput.repository.InputRepository
+import nl.openvalue.joosten.rosanne.kotlininput.util.CompileService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
-import java.util.Arrays.asList
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import java.util.regex.Pattern.DOTALL
-import javax.tools.DiagnosticCollector
-import javax.tools.JavaFileObject
-import javax.tools.ToolProvider
-import kotlin.collections.ArrayList
 
 @RestController
 @CrossOrigin(origins = ["http://localhost:4200"], allowedHeaders = ["*"])
 class KotlinInputRestController {
     @Autowired
     lateinit var repository: InputRepository
+
+    @Autowired
+    lateinit var compileService: CompileService
 
     @GetMapping("/greeting", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun greeting(@RequestParam(value = "name", defaultValue = "Anonymous") name: String): Greeting {
@@ -43,27 +41,8 @@ class KotlinInputRestController {
         if(!matches) {
             return ProblemAnalysis(false, emptyList(), "Wrap your code in a class with main method")
         }
-        val retrieveClass = m.group(1)
-        val file = JavaSourceFromString(retrieveClass, text)
-        val compiler = ToolProvider.getSystemJavaCompiler()
-        val diagnostics = DiagnosticCollector<JavaFileObject>()
-
-        val compilationUnits = asList(file)
-        val task = compiler.getTask(null, null, diagnostics, null, null, compilationUnits)
-
-        val success = task.call()
-        val invalidPositions = ArrayList<Long>()
-        for (diagnostic in diagnostics.getDiagnostics()) {
-            invalidPositions.add(diagnostic.position);
-            System.out.println(diagnostic.getCode())
-            System.out.println(diagnostic.getKind())
-            System.out.println(diagnostic.getPosition())
-            System.out.println(diagnostic.getStartPosition())
-            System.out.println(diagnostic.getEndPosition())
-            System.out.println(diagnostic.getSource())
-            System.out.println(diagnostic.getMessage(null))
-        }
-        return ProblemAnalysis(success, invalidPositions, "")
+        val className = m.group(1)
+        return compileService.compileJavaCode(className, text)
     }
 
 }

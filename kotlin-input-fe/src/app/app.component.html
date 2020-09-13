@@ -15,8 +15,8 @@
   <textarea rows="20" cols="100" [(ngModel)]="problem"></textarea>
     <button (click)="submitProblem(1)">Submit Solution</button>
 </div>
-<div *ngIf="problemSend">
-  {{valid ? 'You submitted valid Java' : 'You did not submit valid Java'}}
-  {{!valid ? '\nInvalid lines: ' + invalidPositions : ''}}
-  {{!valid ? hint : ''}}
+<div class="feedback" *ngIf="problemSend">
+  <div>{{valid ? 'You submitted valid Java' : 'You did not submit valid Java'}}</div>
+  <div *ngIf="!valid && !hint">{{ 'Invalid positions: ' + invalidPositions}}</div>
+  <div *ngIf="!valid">{{'\n'+ hint}}</div>
 </div>
