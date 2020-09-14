@@ -35,13 +35,18 @@ class KotlinInputRestController {
 
     @PostMapping("/kotlin-input")
     fun kotlinInput(@RequestParam(value = "name", defaultValue = "Anonymous") name: String, @RequestParam(value = "problem") problemNo: Int, @RequestBody text: String): ProblemAnalysis {
-        val p: Pattern = Pattern.compile(".*\\s?class\\s(\\w+)\\s?\\{.*", DOTALL)
-        val m: Matcher = p.matcher(text)
-        val matches: Boolean = m.matches()
-        if(!matches) {
-            return ProblemAnalysis(false, emptyList(), "Wrap your code in a class with main method")
+        val classNamePattern: Pattern = Pattern.compile(".*\\s?class\\s(\\w+)\\s?\\{.*", DOTALL)
+        val mainMethodPattern: Pattern = Pattern.compile(".*void main\\s?\\(\\s?String.*", DOTALL)
+        val classNameMatcher: Matcher = classNamePattern.matcher(text)
+        val mainMethodMatcher: Matcher = mainMethodPattern.matcher(text)
+        val hasClassName: Boolean = classNameMatcher.matches()
+        val hasMainMethod: Boolean = mainMethodMatcher.matches()
+        if(!hasClassName) {
+            return ProblemAnalysis(false, emptyList(), "Wrap your code in a class")
+        } else if (!hasMainMethod) {
+            return ProblemAnalysis(false, emptyList(), "Wrap you code in main method")
         }
-        val className = m.group(1)
+        val className = classNameMatcher.group(1)
         return compileService.compileJavaCode(className, text)
     }
 
